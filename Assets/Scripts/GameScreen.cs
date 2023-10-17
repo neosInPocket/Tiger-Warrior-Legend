@@ -14,6 +14,6 @@ public class GameScreen : MonoBehaviour
 	
 	public void Refresh()
 	{
-		_levelText.text = "Level " + MainMenuController.CurrentLevel;
+		_levelText.text = "Level " + MainMenuManager.CurrentLevel;
 	}
 }

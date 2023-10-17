@@ -9,19 +9,27 @@ public class PlayerManager : MonoBehaviour
 	[SerializeField] private SpriteRenderer spriteRenderer;
 	public Action<bool> TakeDamageEvent;
 	public SpriteRenderer SpriteRenderer => spriteRenderer;
-	private bool isDead;
+	public bool isDead;
 	
 	private void OnTriggerEnter2D(Collider2D collider)
 	{
 		if (collider.TryGetComponent<EnemyController>(out EnemyController enemyController))
 		{
-			Destroy(enemyController.gameObject);
+			enemyController.PlayDeath();
+			return;
 		}
 		
 		if (collider.TryGetComponent<CoinController>(out CoinController coinController))
 		{
-			Destroy(coinController.gameObject);
+			GameManager._points += 2;
+			coinController.PlayDeath();
+			TakeDamageEvent?.Invoke(true);
 		}
+	}
+	
+	public void InvokeTakeDamageEvent(bool value)
+	{
+		TakeDamageEvent?.Invoke(value);
 	}
 	
 	public void PlayDeath(bool isWon)
@@ -33,14 +41,14 @@ public class PlayerManager : MonoBehaviour
 		}
 		
 		TakeDamageEvent?.Invoke(false);
-		if (GameController.lives != 0)
+		if (GameManager.lives != 0)
 		{
 			StopCoroutine(TakeDamage());
 			StartCoroutine(TakeDamage());
 			return;
 		}
 		
-		if (GameController.lives == 0)
+		if (GameManager.lives == 0)
 		{
 			StartCoroutine(PlayEffect());
 		}

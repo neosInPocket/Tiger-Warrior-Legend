@@ -10,10 +10,6 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 public class TutorialScreen : MonoBehaviour
 {
 	[SerializeField] private TMP_Text _text;
-	[SerializeField] private Image healthZoneArrow; 
-	[SerializeField] private Image rightArrow; 
-	[SerializeField] private Image leftArrow; 
-	[SerializeField] private Image ballArrow;
 	[SerializeField] private Image character;
 	[SerializeField] private Image back;	
 	public Action TutorialEnd;
@@ -27,7 +23,7 @@ public class TutorialScreen : MonoBehaviour
 	
 	public void PlayTutor()
 	{
-		_text.text = "Welcome to Magical Sunrise of Egypt!";
+		_text.text = "Welcome to Chained!";
 		_text.gameObject.SetActive(true);
 		back.gameObject.SetActive(true);
 		character.gameObject.SetActive(true);
@@ -43,14 +39,14 @@ public class TutorialScreen : MonoBehaviour
 	{
 		Touch.onFingerDown -= Skip1;
 		Touch.onFingerDown += Skip2;
-		_text.text = "Leap with your ball to one plate to another with touching screen!";
+		_text.text = "Your goal is to pull your enemies with controlling your chain and defeat you line!";
 	}
 	
 	private void Skip2(Finger finger)
 	{
 		Touch.onFingerDown -= Skip2;
 		Touch.onFingerDown += Skip3;
-		_text.text = "If you touch one of the edges of the screen, you will lose lives";
+		_text.text = "If anything reaches your line, you will lose lives";
 	}
 	
 	private void Skip3(Finger finger)

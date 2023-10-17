@@ -17,6 +17,8 @@ public class ChainController : MonoBehaviour
 	private bool isShooted;
 	private bool isDecreasing;
 	private bool isHooked;
+	private float[] hookUpgrades = new float[4] { 1, 1.3f, 1.5f, 1.8f };
+	private float hookDistance;
 	
 	private void Start()
 	{
@@ -24,6 +26,12 @@ public class ChainController : MonoBehaviour
 		Touch.onFingerDown += OnFingerDown;
 		Touch.onFingerMove += OnFingerMove;
 		Touch.onFingerUp += OnFingerUp;
+		Initialize();
+	}
+	
+	public void Initialize()
+	{
+		hookDistance = hookUpgrades[MainMenuManager.CurrentChainSpeedUpgrade];
 		pointer.gameObject.SetActive(false);
 		pointerHolder.transform.position = player.transform.position;
 		isShooted = false;
@@ -32,9 +40,11 @@ public class ChainController : MonoBehaviour
 	
 	private void Update()
 	{
+		if (!GameManager._isPlaying) return;
+		
 		if (!isShooted) return;
 		
-		if (spriteRenderer.size.x <= 1 && !isDecreasing)
+		if (spriteRenderer.size.x <= hookDistance && !isDecreasing)
 		{
 			spriteRenderer.size = new Vector2(spriteRenderer.size.x + chainSpeed * Time.deltaTime, spriteRenderer.size.y);
 			boxCollider.size = new Vector2(boxCollider.size.x + chainSpeed * Time.deltaTime, boxCollider.size.y);
@@ -64,6 +74,7 @@ public class ChainController : MonoBehaviour
 		if (collider.TryGetComponent<EnemyController>(out EnemyController enemy))
 		{
 			if (isHooked) return;
+			AudioEvent.RaiseEvent(AudioTypes.Chained);
 			
 			isHooked = true;
 			isDecreasing = true;
@@ -71,10 +82,24 @@ public class ChainController : MonoBehaviour
 			enemy.transform.right = player.transform.position - enemy.transform.position;
 			enemy.Rb.velocity = hookSpeed * enemy.transform.right;
 		}
+		
+		if (collider.TryGetComponent<CoinController>(out CoinController coin))
+		{
+			if (isHooked) return;
+			AudioEvent.RaiseEvent(AudioTypes.Chained);
+			
+			isHooked = true;
+			isDecreasing = true;
+			RotateTowards(coin.transform.position);
+			coin.transform.right = player.transform.position - coin.transform.position;
+			coin.Rb.velocity = hookSpeed * coin.transform.right;
+		}
 	}
 	
 	private void OnFingerDown(Finger finger)
 	{
+		if (!GameManager._isPlaying) return;
+		
 		if (isShooted) return;
 		
 		pointer.gameObject.SetActive(true);
@@ -88,6 +113,8 @@ public class ChainController : MonoBehaviour
 	
 	private void OnFingerMove(Finger finger)
 	{
+		if (!GameManager._isPlaying) return;
+		
 		if (isShooted) return;
 		
 		RotatePointer(finger.screenPosition);
@@ -95,8 +122,11 @@ public class ChainController : MonoBehaviour
 	
 	private void OnFingerUp(Finger finger)
 	{
+		if (!GameManager._isPlaying) return;
+		
 		if (isShooted) return;
 		
+		AudioEvent.RaiseEvent(AudioTypes.Chained);
 		pointer.gameObject.SetActive(false);
 		isShooted = true;
 	}

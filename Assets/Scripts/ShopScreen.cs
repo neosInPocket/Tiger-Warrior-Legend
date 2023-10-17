@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class ShopScreen : MonoBehaviour
 {
-	[SerializeField] private Button _speedButton;
+	[SerializeField] private Button chainSpeedButton;
 	[SerializeField] private Button _livesButton;
-	[SerializeField] private TMP_Text rotSpeedUpgradeAmount;
+	[SerializeField] private TMP_Text chainSpeedUpgradeAmount;
 	[SerializeField] private TMP_Text _maxLivesUpgradeAmount;
 	[SerializeField] private TMP_Text _coinsText;
 	
@@ -19,44 +19,44 @@ public class ShopScreen : MonoBehaviour
 	
 	public void BuyLivesUpgrade()
 	{
-		var leftCoins = MainMenuController.Coins - 100;
+		var leftCoins = MainMenuManager.Coins - 100;
 		if (leftCoins < 0)
 		{
 			return;
 		}
-		MainMenuController.CurrentLivesUpgrade++;
-		MainMenuController.Coins -= 100;
-		SaveLoad.Save();
+		MainMenuManager.CurrentLivesUpgrade++;
+		MainMenuManager.Coins -= 100;
+		SaveLoadSystem.Save();
 		Refresh();
 	}
 	
-	public void BuyRotationSpeedUpgrade()
+	public void BuyShainHookDistanceUpgrade()
 	{
-		var leftCoins = MainMenuController.Coins - 50;
+		var leftCoins = MainMenuManager.Coins - 50;
 		if (leftCoins < 0)
 		{
 			return;
 		}
-		MainMenuController.CurrentRotationSpeedUpgrade++;
-		MainMenuController.Coins -= 50;
-		SaveLoad.Save();
+		MainMenuManager.CurrentChainSpeedUpgrade++;
+		MainMenuManager.Coins -= 50;
+		SaveLoadSystem.Save();
 		Refresh();
 	}
 	
 	public void Refresh()
 	{
-		_speedButton.interactable = true;
+		chainSpeedButton.interactable = true;
 		_livesButton.interactable = true;
-		_coinsText.text = MainMenuController.Coins.ToString();
-		rotSpeedUpgradeAmount.text = "Rot. speed upgrade: " + MainMenuController.CurrentRotationSpeedUpgrade.ToString() + "/3";
-		_maxLivesUpgradeAmount.text = "Max lives: " + MainMenuController.CurrentLivesUpgrade.ToString() + "/3";
+		_coinsText.text = MainMenuManager.Coins.ToString();
+		chainSpeedUpgradeAmount.text = MainMenuManager.CurrentChainSpeedUpgrade.ToString() + "/3";
+		_maxLivesUpgradeAmount.text = MainMenuManager.CurrentLivesUpgrade.ToString() + "/3";
 		
-		if (MainMenuController.CurrentRotationSpeedUpgrade == 3 || MainMenuController.Coins - 50 < 0)
+		if (MainMenuManager.CurrentChainSpeedUpgrade == 3 || MainMenuManager.Coins - 50 < 0)
 		{
-			_speedButton.interactable = false;
+			chainSpeedButton.interactable = false;
 		}
 		
-		if (MainMenuController.CurrentLivesUpgrade == 3 || MainMenuController.Coins - 100 < 0)
+		if (MainMenuManager.CurrentLivesUpgrade == 3 || MainMenuManager.Coins - 100 < 0)
 		{
 			_livesButton.interactable = false;
 		}

@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class CoinController : MonoBehaviour
 {
+	[SerializeField] private GameObject effect;	
 	[SerializeField] private SpriteRenderer spriteRenderer;
+	[SerializeField] private TrailRenderer trailRenderer;
 	[SerializeField] private CircleCollider2D circleCollider;
 	[SerializeField] private Rigidbody2D rb;
 	[SerializeField] private Vector2 speedRange;
 	public Rigidbody2D Rb => rb;
+	public bool isDead;
 	
 	private void Start()
 	{
@@ -30,5 +33,22 @@ public class CoinController : MonoBehaviour
 		}
 		
 		rb.velocity = Vector2.down * rndSpeed;
+	}
+	
+	public void PlayDeath()
+	{
+		if (isDead) return;
+		isDead = true;
+		StartCoroutine(PlayEffect());
+	}
+	
+	private IEnumerator PlayEffect()
+	{	
+		trailRenderer.enabled = false;
+		spriteRenderer.color = new Color(0, 0, 0, 0);
+		var deathEffect = Instantiate(effect, transform.position, Quaternion.identity);
+		yield return new WaitForSeconds(1f);
+		Destroy(deathEffect);
+		Destroy(this.gameObject);
 	}
 }

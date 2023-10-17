@@ -17,11 +17,6 @@ public class EnemySpawner : MonoBehaviour
 		set => spawnDelay = value;
 	}
 	
-	private void Start()
-	{
-		Enable();
-	}
-	
 	private void Update()
 	{
 		if (!isSpawning) return;
@@ -31,6 +26,7 @@ public class EnemySpawner : MonoBehaviour
 	
 	public void Enable()
 	{
+		GameManager._isPlaying = true;
 		isSpawning = true;
 	}
 	

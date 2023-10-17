@@ -11,7 +11,18 @@ public class DeathZoneController : MonoBehaviour
 	{
 		if (collider.TryGetComponent<EnemyController>(out EnemyController enemy))
 		{
+			if (enemy.isDead) return;
 			
+			player.InvokeTakeDamageEvent(false);
+			enemy.PlayDeath();
+			return;
+		}
+		
+		if (collider.TryGetComponent<CoinController>(out CoinController coin))
+		{
+			if (coin.isDead) return;
+			
+			coin.PlayDeath();
 		}
 	}
 }
